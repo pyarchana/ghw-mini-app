@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-mode="focus">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>25:00 – Focus</title>
+    <style>
+      :root {
+        --accent: #e5533d;
+        --ring: 251.327;
+        --radius: 24px;
+        --ease: 0.35s ease;
+      }
+
+      html[data-mode="focus"] {
+        --accent: #e5533d;
+        --on-accent: #fff8f6;
+      }
+
+      html[data-mode="break"] {
+        --accent: #3da35d;
+        --on-accent: #f4fff6;
+      }
+
+      html[data-theme="light"] {
+        --bg: #f3f0ed;
+        --card: #ffffff;
+        --text: #1c1917;
+        --muted: #6f675f;
+        --track: #ece6e1;
+        --btn: #f4efea;
+        --btn-text: #2a2622;
+        --shadow: 0 18px 50px rgba(40, 28, 22, 0.12);
+        --border: rgba(28, 25, 23, 0.06);
+      }
+
+      html[data-theme="dark"] {
+        --bg: #161311;
+        --card: #211d1b;
+        --text: #f4eee9;
+        --muted: #b0a59c;
+        --track: #322c29;
+        --btn: #2c2623;
+        --btn-text: #f4eee9;
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
+        --border: rgba(255, 255, 255, 0.06);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 4.5rem 1rem 2rem;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        transition: background-color var(--ease), color var(--ease);
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+        width: 44px;
+        height: 44px;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        background: var(--card);
+        color: var(--text);
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+      }
+
+      .theme-toggle svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      html[data-theme="light"] .icon-sun,
+      html[data-theme="dark"] .icon-moon {
+        display: none;
+      }
+
+      .card {
+        width: min(100%, 420px);
+        padding: 2.25rem 1.75rem 1.85rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        transition: background-color var(--ease), box-shadow var(--ease),
+          border-color var(--ease);
+      }
+
+      #mode {
+        margin: 0 0 1.35rem;
+        font-size: 0.95rem;
+        font-weight: 650;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent);
+        transition: color var(--ease);
+      }
+
+      .ring-wrap {
+        position: relative;
+        width: min(72vw, 260px);
+        margin: 0 auto 1.75rem;
+      }
+
+      .ring-wrap svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        transform: rotate(-90deg);
+      }
+
+      .ring-track,
+      .ring-progress {
+        fill: none;
+        stroke-width: 8;
+        stroke-linecap: round;
+      }
+
+      .ring-track {
+        stroke: var(--track);
+        transition: stroke var(--ease);
+      }
+
+      .ring-progress {
+        stroke: var(--accent);
+        stroke-dasharray: var(--ring);
+        stroke-dashoffset: var(--ring);
+        transition: stroke var(--ease), stroke-dashoffset 0.35s linear;
+      }
+
+      #time {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        margin: 0;
+        font-size: clamp(2.4rem, 10vw, 3.35rem);
+        font-weight: 750;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.02em;
+        line-height: 1;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      button {
+        font: inherit;
+        font-weight: 650;
+        cursor: pointer;
+        border-radius: 999px;
+        border: 0;
+        transition: background-color 0.2s ease, color 0.2s ease,
+          transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      button:active:not(:disabled) {
+        transform: translateY(1px) scale(0.97);
+      }
+
+      button:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+      }
+
+      .btn-primary {
+        min-width: 7.2rem;
+        padding: 0.78rem 1.3rem;
+        background: var(--accent);
+        color: var(--on-accent);
+        box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 32%, transparent);
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        filter: brightness(1.06);
+      }
+
+      .btn-ghost {
+        padding: 0.78rem 1.15rem;
+        background: var(--btn);
+        color: var(--btn-text);
+      }
+
+      .btn-ghost:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--btn) 80%, var(--accent));
+      }
+
+      .sessions {
+        margin: 1.6rem 0 0;
+        padding-top: 1.2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .sessions p {
+        margin: 0 0 0.7rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      #count {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .dots {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.4rem;
+        min-height: 0.7rem;
+      }
+
+      .dot {
+        width: 0.62rem;
+        height: 0.62rem;
+        border-radius: 50%;
+        background: var(--accent);
+        transition: background-color var(--ease);
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      type="button"
+      class="theme-toggle"
+      id="theme-toggle"
+      aria-label="Switch to dark theme"
+    >
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M12.7 2.05a1 1 0 0 0-1.12 1.37 8 8 0 1 1-8.16 8.16 1 1 0 0 0-1.37 1.12A10 10 0 1 0 12.7 2.05Z"
+        />
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16a1 1 0 0 1 1 1v1.5a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 17.5a1 1 0 0 1 1 1V22a1 1 0 1 1-2 0v-1.5a1 1 0 0 1 1-1ZM3 13H1.5a1 1 0 1 1 0-2H3a1 1 0 1 1 0 2Zm19.5 0H21a1 1 0 1 1 0-2h1.5a1 1 0 1 1 0 2ZM5.05 5.05a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 1 1-1.41 1.41L5.05 6.46a1 1 0 0 1 0-1.41Zm11.43 11.43a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 0 1-1.41 1.41l-1.06-1.06a1 1 0 0 1 0-1.41ZM18.95 5.05a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0ZM7.52 16.48a1 1 0 0 1 0 1.41L6.46 18.95a1 1 0 0 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0Z"
+        />
+      </svg>
+    </button>
+
+    <main class="card">
+      <p id="mode">Focus</p>
+
+      <div class="ring-wrap">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="ring-track" cx="50" cy="50" r="40"></circle>
+          <circle
+            class="ring-progress"
+            id="ring"
+            cx="50"
+            cy="50"
+            r="40"
+          ></circle>
+        </svg>
+        <p id="time" role="timer" aria-live="polite">25:00</p>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-primary" id="toggle" type="button">Start</button>
+        <button class="btn-ghost" id="reset" type="button">Reset</button>
+        <button class="btn-ghost" id="skip" type="button">Skip</button>
+      </div>
+
+      <div class="sessions">
+        <p>Sessions completed: <span id="count">0</span></p>
+        <div class="dots" id="dots" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <script>
+      const FOCUS = 25 * 60;
+      const BREAK = 5 * 60;
+      const RING = 2 * Math.PI * 40;
+      const THEME_KEY = "pomodoro-theme";
+
+      const html = document.documentElement;
+      const timeEl = document.getElementById("time");
+      const modeEl = document.getElementById("mode");
+      const ringEl = document.getElementById("ring");
+      const toggleBtn = document.getElementById("toggle");
+      const resetBtn = document.getElementById("reset");
+      const skipBtn = document.getElementById("skip");
+      const countEl = document.getElementById("count");
+      const dotsEl = document.getElementById("dots");
+      const themeBtn = document.getElementById("theme-toggle");
+
+      let mode = "focus";
+      let remaining = FOCUS;
+      let running = false;
+      let timer = null;
+      let completed = 0;
+
+      html.style.setProperty("--ring", String(RING));
+
+      function preferredTheme() {
+        const saved = localStorage.getItem(THEME_KEY);
+        if (saved === "light" || saved === "dark") return saved;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+
+      function setTheme(theme) {
+        html.setAttribute("data-theme", theme);
+        themeBtn.setAttribute(
+          "aria-label",
+          theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+        );
+        localStorage.setItem(THEME_KEY, theme);
+      }
+
+      function duration() {
+        return mode === "focus" ? FOCUS : BREAK;
+      }
+
+      function format(seconds) {
+        const total = Math.max(0, seconds);
+        const m = String(Math.floor(total / 60)).padStart(2, "0");
+        const s = String(total % 60).padStart(2, "0");
+        return m + ":" + s;
+      }
+
+      function renderDots() {
+        dotsEl.replaceChildren();
+        for (let i = 0; i < completed; i += 1) {
+          const dot = document.createElement("span");
+          dot.className = "dot";
+          dotsEl.appendChild(dot);
+        }
+      }
+
+      function draw() {
+        const total = duration();
+        const elapsed = total - remaining;
+        const progress = elapsed / total;
+        timeEl.textContent = format(remaining);
+        modeEl.textContent = mode === "focus" ? "Focus" : "Break";
+        html.setAttribute("data-mode", mode);
+        ringEl.style.strokeDashoffset = String(RING * (1 - progress));
+        document.title = format(remaining) + " – " + (mode === "focus" ? "Focus" : "Break");
+        countEl.textContent = String(completed);
+        toggleBtn.textContent = running ? "Pause" : remaining < total ? "Resume" : "Start";
+        renderDots();
+      }
+
+      function clearTimer() {
+        if (timer !== null) {
+          clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      function nextPhase(countSession) {
+        clearTimer();
+        running = false;
+        if (mode === "focus") {
+          if (countSession) completed += 1;
+          mode = "break";
+          remaining = BREAK;
+        } else {
+          mode = "focus";
+          remaining = FOCUS;
+        }
+        draw();
+      }
+
+      function tick() {
+        remaining -= 1;
+        if (remaining <= 0) {
+          nextPhase(mode === "focus");
+          return;
+        }
+        draw();
+      }
+
+      function start() {
+        if (running) return;
+        running = true;
+        clearTimer();
+        timer = setInterval(tick, 1000);
+        draw();
+      }
+
+      function pause() {
+        running = false;
+        clearTimer();
+        draw();
+      }
+
+      function toggle() {
+        if (running) pause();
+        else start();
+      }
+
+      function reset() {
+        clearTimer();
+        running = false;
+        mode = "focus";
+        remaining = FOCUS;
+        draw();
+      }
+
+      function skip() {
+        nextPhase(false);
+      }
+
+      setTheme(preferredTheme());
+      themeBtn.addEventListener("click", () => {
+        setTheme(html.getAttribute("data-theme") === "dark" ? "light" : "dark");
+      });
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+        if (!localStorage.getItem(THEME_KEY)) {
+          setTheme(event.matches ? "dark" : "light");
+        }
+      });
+
+      toggleBtn.addEventListener("click", toggle);
+      resetBtn.addEventListener("click", reset);
+      skipBtn.addEventListener("click", skip);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.code !== "Space" && event.key !== " ") return;
+        if (event.repeat) return;
+        const tag = (event.target && event.target.tagName) || "";
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        event.preventDefault();
+        toggle();
+      });
+
+      draw();
+    </script>
+  </body>
+</html>
